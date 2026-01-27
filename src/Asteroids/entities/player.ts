@@ -5,11 +5,21 @@ import Entity from "./entity.ts"
 
 export default class Player extends Entity {
     lives: number = 3;
+    thrusting: boolean = false;
 
     constructor({ position, velocity, rotation, shape, color }: { position: Position, velocity: Velocity, 
                 rotation: number, shape: Shape, color: string }) {
         super({ position, velocity, rotation, shape, color });
         this.rotation = 0;
+    }
+
+    moveForward(deltaTime: number) {
+        this.velocity.x += Math.cos(this.rotation) * PLAYER_SETTINGS.ACCELERATION * deltaTime;
+        this.velocity.y += Math.sin(this.rotation) * PLAYER_SETTINGS.ACCELERATION * deltaTime;
+    }
+
+    rotate(deltaTime: number, direction: 1 | -1) {
+        this.rotation += PLAYER_SETTINGS.ROTATION_SPEED * deltaTime * direction;
     }
 
     update() {

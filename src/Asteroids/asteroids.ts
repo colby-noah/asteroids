@@ -32,15 +32,14 @@ export default class Asteroids {
     update() {
         // Handle input
         if (this.input.keys.w) {
-            this.player.velocity.x += Math.cos(this.player.rotation) * PLAYER_SETTINGS.ACCELERATION * this.deltaTime;
-            this.player.velocity.y += Math.sin(this.player.rotation) * PLAYER_SETTINGS.ACCELERATION * this.deltaTime;
+            this.player.moveForward(this.deltaTime);
         }
         if (this.input.keys.a) {
-            this.player.rotation -= PLAYER_SETTINGS.ROTATION_SPEED * this.deltaTime;
+            this.player.rotate(this.deltaTime, -1);
         }
 
         if (this.input.keys.d) {
-            this.player.rotation += PLAYER_SETTINGS.ROTATION_SPEED * this.deltaTime;
+            this.player.rotate(this.deltaTime, 1);
         }
 
         // Update all entities

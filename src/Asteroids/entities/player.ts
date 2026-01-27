@@ -1,4 +1,4 @@
-import type { Position, Velocity } from "../types";
+import type { Position, Velocity, Shape } from "../types";
 import { PLAYER_SETTINGS, GAME_SETTINGS } from "../constants.ts";
 import Entity from "./entity.ts"
 
@@ -6,8 +6,8 @@ import Entity from "./entity.ts"
 export default class Player extends Entity {
     lives: number = 3;
 
-    constructor({ position, velocity, rotation, shape, color }: { position: Position, velocity: Velocity, rotation: number, 
-                shape: [number, number][], color: string }) {
+    constructor({ position, velocity, rotation, shape, color }: { position: Position, velocity: Velocity, 
+                rotation: number, shape: Shape, color: string }) {
         super({ position, velocity, rotation, shape, color });
         this.rotation = 0;
     }

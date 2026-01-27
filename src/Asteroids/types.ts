@@ -7,3 +7,5 @@ export interface Velocity {
     x: number;
     y: number;
 };
+
+export type Shape = [number, number][][];

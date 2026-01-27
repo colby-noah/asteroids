@@ -1,17 +1,19 @@
-import type { Position, Velocity } from "../types";
+import type { Position, Velocity, Shape } from "../types";
 import { GAME_SETTINGS } from "../constants";
 
 
 export default abstract class Entity {
+    // Physics
     position: Position;
     velocity: Velocity;
     rotation: number;
 
-    shape: [number, number][];
+    // Appearance
+    shape: Shape;
     color: string;
 
     constructor({ position, velocity, rotation, shape, color }: { position: Position, velocity: Velocity, 
-                rotation: number, shape: [number, number][], color: string }) {
+                rotation: number, shape: Shape, color: string }) {
         this.position = position;
         this.velocity = velocity;
         this.rotation = rotation;
@@ -36,7 +38,7 @@ export default abstract class Entity {
     };
 
     draw(ctx: CanvasRenderingContext2D): void {
-        if (!ctx || this.shape.length === 0 || !this.shape[0]) return; 
+        if (!ctx) return; 
 
         // Save original context before rotating
         ctx.save();
@@ -47,21 +49,27 @@ export default abstract class Entity {
         ctx.translate(-this.position.x, -this.position.y);
 
         // Draw
-        ctx.beginPath();
+        for (const path of this.shape) {
+            if (!path[0]) return;
 
-        const [startX, startY] = this.shape[0];
-        ctx.moveTo(this.position.x + startX, this.position.y + startY);
+            ctx.beginPath();
 
-        // Connect shape points
-        for (const [x, y] of this.shape.slice(1)) {
-            ctx.lineTo(this.position.x + x, this.position.y + y);
-        }
+            // Move context to first point
+            const [startX, startY] = path[0];
+            ctx.moveTo(this.position.x + startX, this.position.y + startY);
 
-        ctx.closePath();
+            // Connect shape points
+            for (const [x, y] of path.slice(1)) {
+                ctx.lineTo(this.position.x + x, this.position.y + y);
+            }
 
-        // Color lines
-        ctx.strokeStyle = this.color;
-        ctx.stroke();
+            ctx.closePath();
+
+            // Color lines
+            ctx.strokeStyle = this.color;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        };
 
         // Restore original context
         ctx.restore();

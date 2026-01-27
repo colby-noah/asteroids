@@ -16,8 +16,25 @@ export const GAME_SETTINGS = {
 
 export const PLAYER_SETTINGS = {
     ACCELERATION: 0.005,
-    ROTATION_SPEED: 0.004,
-    MAX_SPEED: 20,
-    SHAPE: [[20, 0], [-15, -15], [-15, 15]],
+    ROTATION_SPEED: 0.002,
+    MAX_SPEED: 40,
+    SHAPE: [
+        // Main triangle
+        [
+            [20, 0],
+            [-17, -12],
+            [-17, 12]
+        ],
+        // Right extended line
+        [
+            [-17, 12],
+            [-25, 15]
+        ],
+        // Left extended line
+        [
+            [-17, -12],
+            [-25, -15]
+        ]
+    ],
 } as const;
 

@@ -34,6 +34,10 @@ export default class Asteroids {
         if (this.input.keys.w) {
             this.player.moveForward(this.deltaTime);
         }
+        else {
+            this.player.controlThruster(false);
+        }
+
         if (this.input.keys.a) {
             this.player.rotate(this.deltaTime, -1);
         }

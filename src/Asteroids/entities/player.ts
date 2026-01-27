@@ -13,9 +13,23 @@ export default class Player extends Entity {
         this.rotation = 0;
     }
 
+    controlThruster(on: boolean) {
+        if (on && !this.thrusting) {
+            this.thrusting = true;
+            this.shape.push(PLAYER_SETTINGS.THRUST_PATH.map(point => [...point]));
+        }
+        else if (!on && this.thrusting) {
+            this.thrusting = false;
+            this.shape.pop();
+        }
+    }
+
     moveForward(deltaTime: number) {
         this.velocity.x += Math.cos(this.rotation) * PLAYER_SETTINGS.ACCELERATION * deltaTime;
         this.velocity.y += Math.sin(this.rotation) * PLAYER_SETTINGS.ACCELERATION * deltaTime;
+
+        // Creates a pulsing effect for the thruster
+        this.controlThruster(!this.thrusting);
     }
 
     rotate(deltaTime: number, direction: 1 | -1) {

@@ -34,7 +34,12 @@ export const PLAYER_SETTINGS = {
         [
             [-17, -12],
             [-25, -15]
-        ]
+        ],
+    ],
+    THRUST_PATH: [
+        [-35, 0],
+        [-17, 8],
+        [-17, -8]
     ],
 } as const;
 

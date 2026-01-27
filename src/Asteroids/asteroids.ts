@@ -35,6 +35,7 @@ export default class Asteroids {
             this.player.moveForward(this.deltaTime);
         }
         else {
+            // Turn off thruster animation
             this.player.controlThruster(false);
         }
 

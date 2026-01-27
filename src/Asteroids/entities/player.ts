@@ -28,8 +28,8 @@ export default class Player extends Entity {
         this.velocity.x += Math.cos(this.rotation) * PLAYER_SETTINGS.ACCELERATION * deltaTime;
         this.velocity.y += Math.sin(this.rotation) * PLAYER_SETTINGS.ACCELERATION * deltaTime;
 
-        // Creates a pulsing effect for the thruster
-        this.controlThruster(!this.thrusting);
+        // Animate the thruster
+        this.controlThruster(true);
     }
 
     rotate(deltaTime: number, direction: 1 | -1) {

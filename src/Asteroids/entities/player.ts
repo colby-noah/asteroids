@@ -7,9 +7,10 @@ export default class Player extends Entity {
     lives: number = 3;
     thrusting: boolean = false;
 
-    constructor({ position, velocity, rotation, shape, color }: { position: Position, velocity: Velocity, 
-                rotation: number, shape: Shape, color: string }) {
-        super({ position, velocity, rotation, shape, color });
+    constructor({ position, velocity, rotation, shape, scale, color }: 
+                { position: Position, velocity: Velocity, rotation: number, shape: Shape, scale: number, color: string }) 
+    {
+        super({ position, velocity, rotation, shape, scale, color });
         this.rotation = 0;
     }
 

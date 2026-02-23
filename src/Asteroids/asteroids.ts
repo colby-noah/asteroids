@@ -2,6 +2,7 @@ import { GAME_SETTINGS, PLAYER_SETTINGS } from "./constants";
 import Input from "./input";
 import Entity from "./entities/entity";
 import Player from "./entities/player";
+import Asteroid from "./entities/asteroid";
 
 
 export default class Asteroids {
@@ -23,10 +24,20 @@ export default class Asteroids {
             velocity: { x: 0, y: 0 },
             rotation: 0,
             shape: PLAYER_SETTINGS.SHAPE.map(path => path.map((point) => point as [number, number])),
+            scale: 10,
+            color: "white",
+        });
+
+        const testAsteroid = new Asteroid({
+            position: { x: this.ctx.canvas.width / 2, y: this.ctx.canvas.height / 2 },
+            velocity: { x: 0, y: 0 },
+            rotation: 0,
+            scale: 10,
             color: "white",
         });
 
         this.entities.push(this.player);
+        this.entities.push(testAsteroid);
     }
 
     update() {

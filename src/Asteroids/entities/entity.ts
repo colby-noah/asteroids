@@ -10,14 +10,16 @@ export default abstract class Entity {
 
     // Appearance
     shape: Shape;
+    scale: number;
     color: string;
 
-    constructor({ position, velocity, rotation, shape, color }: { position: Position, velocity: Velocity, 
-                rotation: number, shape: Shape, color: string }) {
+    constructor({ position, velocity, rotation, shape, scale, color }: { position: Position, velocity: Velocity, 
+                rotation: number, shape: Shape, scale: number, color: string }) {
         this.position = position;
         this.velocity = velocity;
         this.rotation = rotation;
         this.shape = shape;
+        this.scale = scale;
         this.color = color;
     }
 
@@ -56,11 +58,17 @@ export default abstract class Entity {
 
             // Move context to first point
             const [startX, startY] = path[0];
-            ctx.moveTo(this.position.x + startX, this.position.y + startY);
+            ctx.moveTo(
+                this.position.x + (startX * this.scale),
+                this.position.y + (startY * this.scale)
+            );
 
             // Connect shape points
             for (const [x, y] of path.slice(1)) {
-                ctx.lineTo(this.position.x + x, this.position.y + y);
+                ctx.lineTo(
+                    this.position.x + (x * this.scale),
+                    this.position.y + (y * this.scale)
+                );
             }
 
             ctx.closePath();

@@ -1,6 +1,5 @@
 import { GAME_SETTINGS, PLAYER_SETTINGS } from "./constants";
 import Input from "./input";
-import Entity from "./entities/entity";
 import Player from "./entities/player";
 import Asteroid from "./entities/asteroid";
 
@@ -14,7 +13,7 @@ export default class Asteroids {
 
     input: Input;
     player: Player;
-    entities: Entity[] = [];
+    asteroids: Asteroid[] = [];
 
     constructor({ ctx }: { ctx: CanvasRenderingContext2D }) {
         this.ctx = ctx;
@@ -36,8 +35,7 @@ export default class Asteroids {
             color: "white",
         });
 
-        this.entities.push(this.player);
-        this.entities.push(testAsteroid);
+        this.asteroids.push(testAsteroid);
     }
 
     update() {
@@ -58,11 +56,22 @@ export default class Asteroids {
             this.player.rotate(this.deltaTime, 1);
         }
 
-        // Update all entities
-        this.entities.forEach(entity => {
-            entity.handleBoundaries();
-            entity.update();
+        this.player.handleBoundaries();
+        this.player.update();
+
+        // Update all asteroids 
+        this.asteroids.forEach(a => {
+            a.handleBoundaries();
+            a.update();
         });
+
+        // Check asteroid collisions
+        for (const asteroid of this.asteroids) {
+            if (this.player.collidesWith(asteroid)) {
+                console.log("Collision!");
+            }
+            // Bullet collisions here
+        }
     }
 
     draw() {
@@ -70,10 +79,11 @@ export default class Asteroids {
         this.ctx.fillStyle = "black";
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
-        // Draw all entities
-        this.entities.forEach(entity => {
-            entity.draw(this.ctx);
-        });
+        // Draw the player
+        this.player.draw(this.ctx);
+
+        // Draw all asteroids 
+        this.asteroids.forEach(a => a.draw(this.ctx));
     }
 
     gameLoop = (timestamp: DOMHighResTimeStamp) => {

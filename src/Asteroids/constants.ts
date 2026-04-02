@@ -4,6 +4,7 @@ export const GAME_SETTINGS = {
 
     // Physics
     FRICTION: 0.98,
+    RADIUS_MODIFIER: 0.8,
 
     // World
     WORLD_BOUNDARIES: {

@@ -6,12 +6,13 @@ export default abstract class Entity {
     // Physics
     position: Position;
     velocity: Velocity;
-    rotation: number;
+    rotation: number;   // In radians
 
     // Appearance
     shape: Shape;
     scale: number;
     color: string;
+    radius: number;
 
     constructor({ position, velocity, rotation, shape, scale, color }: { position: Position, velocity: Velocity, 
                 rotation: number, shape: Shape, scale: number, color: string }) {
@@ -21,6 +22,7 @@ export default abstract class Entity {
         this.shape = shape;
         this.scale = scale;
         this.color = color;
+        this.radius = this.calculateRadius();
     }
 
     handleBoundaries(): void {
@@ -84,5 +86,26 @@ export default abstract class Entity {
 
     };
 
+    collidesWith(other: Entity): boolean {
+        const dx = this.position.x - other.position.x;
+        const dy = this.position.y - other.position.y;
+
+        const distanceSquared = (dx * dx) + (dy * dy);
+        const radiiSum = this.radius + other.radius;
+
+        // Collision if the distanceSquared is less than the radiiSum squared
+        return distanceSquared < (radiiSum * radiiSum);
+    }
+
     abstract update(): void;
+
+    private calculateRadius(): number {
+        const allPoints = this.shape.flat();
+
+        // Calculate the radius by taking the center of the entity
+        // and finding the distance to its farthest point times a modifier
+        return Math.max(...allPoints.map(point =>
+                        Math.sqrt(point[0] ** 2 + point[1] ** 2)
+        )) * this.scale * GAME_SETTINGS.RADIUS_MODIFIER;
+    }
 }

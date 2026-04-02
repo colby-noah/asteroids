@@ -8,13 +8,10 @@ export default class Bullet extends Entity {
                 { position: Position, velocity: Velocity, rotation: number, scale: number, color: string }
     ) {
         super({ position, velocity, rotation, shape: [], scale, color });
+        this.radius = BULLET_SETTINGS.RADIUS;
     }
 
     update() {
-    }
-
-    protected calculateRadius(): number {
-        return BULLET_SETTINGS.RADIUS;
     }
 }
 

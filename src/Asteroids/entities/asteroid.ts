@@ -4,7 +4,7 @@ import Entity from "./entity.ts"
 
 
 export default class Asteroid extends Entity {
-    static getRandomShape(): Shape {
+    private static getRandomShape(): Shape {
         const shapes = ASTEROID_SETTINGS.POSSIBLE_SHAPES;
         const shapeIndex: number = Math.floor(Math.random() * ASTEROID_SETTINGS.POSSIBLE_SHAPES.length);
 
@@ -22,7 +22,7 @@ export default class Asteroid extends Entity {
         super({ position, velocity, rotation, shape: asteroidShape, scale, color });
     }
 
-    update() {
+    public update() {
         // Hit detection?
     }
 }

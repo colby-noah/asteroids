@@ -25,7 +25,7 @@ export default abstract class Entity {
         this.radius = this.calculateRadius();
     }
 
-    handleBoundaries(): void {
+    public handleBoundaries(): void {
         if (this.position.x > GAME_SETTINGS.WORLD_BOUNDARIES.MAX_X) {
             this.position.x = GAME_SETTINGS.WORLD_BOUNDARIES.MIN_X;
         }
@@ -41,7 +41,7 @@ export default abstract class Entity {
         }
     };
 
-    draw(ctx: CanvasRenderingContext2D): void {
+    public draw(ctx: CanvasRenderingContext2D): void {
         if (!ctx) return; 
 
         // Save original context before rotating
@@ -86,7 +86,7 @@ export default abstract class Entity {
 
     };
 
-    collidesWith(other: Entity): boolean {
+    public collidesWith(other: Entity): boolean {
         const dx = this.position.x - other.position.x;
         const dy = this.position.y - other.position.y;
 
@@ -97,7 +97,7 @@ export default abstract class Entity {
         return distanceSquared < (radiiSum * radiiSum);
     }
 
-    abstract update(): void;
+    public abstract update(): void;
 
     private calculateRadius(): number {
         const allPoints = this.shape.flat();

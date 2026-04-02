@@ -38,7 +38,7 @@ export default class Asteroids {
         this.asteroids.push(testAsteroid);
     }
 
-    update() {
+    public update() {
         // Handle input
         if (this.input.keys.w) {
             this.player.moveForward(this.deltaTime);
@@ -74,7 +74,7 @@ export default class Asteroids {
         }
     }
 
-    draw() {
+    public draw() {
         // Reset screen
         this.ctx.fillStyle = "black";
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
@@ -86,7 +86,8 @@ export default class Asteroids {
         this.asteroids.forEach(a => a.draw(this.ctx));
     }
 
-    gameLoop = (timestamp: DOMHighResTimeStamp) => {
+    // Arrow function preserves 'this' context for requestAnimationFrame callback
+    public gameLoop = (timestamp: DOMHighResTimeStamp) => {
         // Delta time
         if (timestamp < this.lastFrameTimeMs + (1000 / GAME_SETTINGS.MAX_FPS)) {
             requestAnimationFrame(this.gameLoop);
@@ -104,7 +105,7 @@ export default class Asteroids {
         requestAnimationFrame(this.gameLoop);
     }
 
-    init() {
+    public init() {
         requestAnimationFrame(this.gameLoop);
     }
 }

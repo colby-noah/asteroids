@@ -12,7 +12,7 @@ export default class Input {
         window.addEventListener("keyup", this.handleKeyUp);
     }
 
-    handleKeyDown = (event: KeyboardEvent) => {
+    public handleKeyDown = (event: KeyboardEvent) => {
         switch (event.code) {
             case "KeyW":
                 this.keys.w = true;
@@ -32,7 +32,7 @@ export default class Input {
         }
     }
 
-    handleKeyUp = (event: KeyboardEvent) => {
+    public handleKeyUp = (event: KeyboardEvent) => {
         switch (event.code) {
             case "KeyW":
                 this.keys.w = false;

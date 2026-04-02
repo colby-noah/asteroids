@@ -14,7 +14,7 @@ export default class Player extends Entity {
         this.rotation = 0;
     }
 
-    controlThruster(on: boolean) {
+    public controlThruster(on: boolean) {
         if (on && !this.thrusting) {
             this.thrusting = true;
             this.shape.push(PLAYER_SETTINGS.THRUST_PATH.map(point => [...point]));
@@ -25,7 +25,7 @@ export default class Player extends Entity {
         }
     }
 
-    moveForward(deltaTime: number) {
+    public moveForward(deltaTime: number) {
         this.velocity.x += Math.cos(this.rotation) * PLAYER_SETTINGS.ACCELERATION * deltaTime;
         this.velocity.y += Math.sin(this.rotation) * PLAYER_SETTINGS.ACCELERATION * deltaTime;
 
@@ -33,11 +33,11 @@ export default class Player extends Entity {
         this.controlThruster(true);
     }
 
-    rotate(deltaTime: number, direction: 1 | -1) {
+    public rotate(deltaTime: number, direction: 1 | -1) {
         this.rotation += PLAYER_SETTINGS.ROTATION_SPEED * deltaTime * direction;
     }
 
-    update() {
+    public update() {
         const speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
 
         if (speed > PLAYER_SETTINGS.MAX_SPEED) {

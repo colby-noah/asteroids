@@ -3,6 +3,7 @@ import { GAME_SETTINGS, PLAYER_SETTINGS } from "./constants";
 import Input from "./input";
 import Player from "./entities/player";
 import Asteroid from "./entities/asteroid";
+import Bullet from "./entities/bullet";
 
 
 export default class Asteroids {
@@ -16,6 +17,7 @@ export default class Asteroids {
     input: Input;
     player: Player;
     asteroids: Asteroid[] = [];
+    bullets: Bullet[] = [];
 
     constructor({ ctx }: { ctx: CanvasRenderingContext2D }) {
         this.ctx = ctx;
@@ -54,14 +56,20 @@ export default class Asteroids {
             this.player.controlThruster(false);
         }
 
+        // Rotate left
         if (this.input.keys.a) {
             this.player.rotate(this.deltaTime, -1);
         }
 
+        // Rotate right
         if (this.input.keys.d) {
             this.player.rotate(this.deltaTime, 1);
         }
 
+        if (this.input.keys.space) {
+            const bullet = this.player.spawnBullet();
+            this.bullets.push(bullet);
+        }
     }
 
     private update() {
@@ -74,10 +82,17 @@ export default class Asteroids {
             a.update(this.deltaTime);
         });
 
+        // Update all bullets
+        this.bullets.forEach(b => {
+            b.handleBoundaries(this.boundaries);
+            b.update(this.deltaTime);
+        });
+        this.bullets = this.bullets.filter(b => !b.isExpired);
+
         // Check asteroid collisions
         for (const asteroid of this.asteroids) {
             if (this.player.collidesWith(asteroid)) {
-                console.log("Collision!");
+                // Handle collisions
             }
             // Bullet collisions here
         }
@@ -93,6 +108,9 @@ export default class Asteroids {
 
         // Draw all asteroids 
         this.asteroids.forEach(a => a.draw(this.ctx));
+        
+        // Draw all bullets
+        this.bullets.forEach(b => b.draw(this.ctx));
     }
 
     // Arrow function preserves 'this' context for requestAnimationFrame callback
@@ -116,7 +134,6 @@ export default class Asteroids {
         this.draw();
         requestAnimationFrame(this.gameLoop);
     }
-
 
     private calculateBoundaries(buffer: number = GAME_SETTINGS.BOUNDARY_BUFFER): Boundaries {
         return {

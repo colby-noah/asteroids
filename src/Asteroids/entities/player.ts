@@ -1,6 +1,7 @@
 import type { Position, Velocity, Shape } from "../types";
-import { PLAYER_SETTINGS, GAME_SETTINGS } from "../constants.ts";
-import Entity from "./entity.ts"
+import { PLAYER_SETTINGS, GAME_SETTINGS, BULLET_SETTINGS } from "../constants";
+import Entity from "./entity"
+import Bullet from "./bullet"
 
 
 export default class Player extends Entity {
@@ -51,6 +52,22 @@ export default class Player extends Entity {
 
         this.velocity.x *= Math.pow(GAME_SETTINGS.FRICTION, deltaTime);
         this.velocity.y *= Math.pow(GAME_SETTINGS.FRICTION, deltaTime);
+    }
+
+    public spawnBullet(): Bullet {
+        return new Bullet({
+            position: {
+                x: this.position.x + Math.cos(this.rotation) * this.radius,
+                y: this.position.y + Math.sin(this.rotation) * this.radius
+            },
+            velocity: {
+                x: Math.cos(this.rotation) * BULLET_SETTINGS.SPEED, 
+                y: Math.sin(this.rotation) * BULLET_SETTINGS.SPEED
+            },
+            rotation: this.rotation, 
+            scale: 1, 
+            color: "white"
+        });
     }
 }
 

@@ -1,6 +1,6 @@
 import type { Position, Velocity, Shape } from "../types";
-import { BULLET_SETTINGS } from "../constants.ts";
-import Entity from "./entity.ts"
+import { BULLET_SETTINGS } from "../constants";
+import Entity from "./entity"
 
 
 export default class Bullet extends Entity {

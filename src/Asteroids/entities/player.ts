@@ -37,22 +37,17 @@ export default class Player extends Entity {
         this.rotation += PLAYER_SETTINGS.ROTATION_SPEED * deltaTime * direction;
     }
 
-    public update() {
-        const speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
+    public update(deltaTime: number) {
+        const speed = Math.sqrt(this.velocity.x ** 2 + this.velocity.y ** 2);
 
+        // Cap speed
         if (speed > PLAYER_SETTINGS.MAX_SPEED) {
-            // Normalize
-            if (speed > 0) {
-                this.velocity.x /= speed;
-                this.velocity.y /= speed;
-            }
-
-            this.velocity.x *= PLAYER_SETTINGS.MAX_SPEED;
-            this.velocity.y *= PLAYER_SETTINGS.MAX_SPEED;
+            this.velocity.x = (this.velocity.x / speed) * PLAYER_SETTINGS.MAX_SPEED;
+            this.velocity.y = (this.velocity.y / speed) * PLAYER_SETTINGS.MAX_SPEED;
         }
 
-        this.position.x += this.velocity.x;
-        this.position.y += this.velocity.y;
+        this.position.x += this.velocity.x * deltaTime;
+        this.position.y += this.velocity.y * deltaTime;
 
         this.velocity.x *= GAME_SETTINGS.FRICTION;
         this.velocity.y *= GAME_SETTINGS.FRICTION;

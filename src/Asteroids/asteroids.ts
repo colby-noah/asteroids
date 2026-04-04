@@ -57,7 +57,7 @@ export default class Asteroids {
         }
 
         this.player.handleBoundaries();
-        this.player.update();
+        this.player.update(this.deltaTime);
 
         // Update all asteroids 
         this.asteroids.forEach(a => {

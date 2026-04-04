@@ -3,7 +3,7 @@ export const GAME_SETTINGS = {
     TIMESTEP: 1000 / 60,
 
     // Physics
-    FRICTION: 0.98,
+    FRICTION: 0.97,
     RADIUS_MODIFIER: 0.8,
 
     // World
@@ -16,9 +16,9 @@ export const GAME_SETTINGS = {
 } as const;
 
 export const PLAYER_SETTINGS = {
-    ACCELERATION: 0.005,
+    ACCELERATION: 0.0003,
     ROTATION_SPEED: 0.002,
-    MAX_SPEED: 40,
+    MAX_SPEED: 0.25,
     SHAPE: [
         // Main triangle
         [

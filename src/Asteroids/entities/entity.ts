@@ -97,7 +97,7 @@ export default abstract class Entity {
         return distanceSquared < (radiiSum * radiiSum);
     }
 
-    public abstract update(): void;
+    public abstract update(deltaTime: number): void;
 
     private calculateRadius(): number {
         const allPoints = this.shape.flat();

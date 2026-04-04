@@ -11,7 +11,7 @@ export default class Bullet extends Entity {
         this.radius = BULLET_SETTINGS.RADIUS;
     }
 
-    update() {
+    update(deltaTime: number) {
     }
 }
 

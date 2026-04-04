@@ -15,15 +15,14 @@ export default class Asteroid extends Entity {
     }
 
     constructor({ position, velocity, rotation, shape, scale, color }: 
-                { position: Position, velocity: Velocity, rotation: number, shape?: Shape | null, scale: number, color: string }
+                { position: Position, velocity: Velocity, rotation: number, shape?: Shape, scale: number, color: string }
     ) {
         const asteroidShape: Shape = shape ?? Asteroid.getRandomShape();
 
         super({ position, velocity, rotation, shape: asteroidShape, scale, color });
     }
 
-    public update() {
-        // Hit detection?
+    public update(deltaTime: number) {
     }
 }
 

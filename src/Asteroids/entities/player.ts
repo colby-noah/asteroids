@@ -55,10 +55,12 @@ export default class Player extends Entity {
     }
 
     public spawnBullet(): Bullet {
+        // 5 is the x coord of the "nose" of the triangle
+        const noseDistance = 5 * this.scale;
         return new Bullet({
             position: {
-                x: this.position.x + Math.cos(this.rotation) * this.radius,
-                y: this.position.y + Math.sin(this.rotation) * this.radius
+                x: this.position.x + Math.cos(this.rotation) * noseDistance,
+                y: this.position.y + Math.sin(this.rotation) * noseDistance 
             },
             velocity: {
                 x: Math.cos(this.rotation) * BULLET_SETTINGS.SPEED, 

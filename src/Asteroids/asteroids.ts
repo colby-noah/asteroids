@@ -68,7 +68,9 @@ export default class Asteroids {
 
         if (this.input.keys.space) {
             const bullet = this.player.spawnBullet();
-            this.bullets.push(bullet);
+            if (bullet) {
+                this.bullets.push(bullet);
+            }
         }
     }
 

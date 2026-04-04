@@ -7,6 +7,7 @@ import Bullet from "./bullet"
 export default class Player extends Entity {
     lives: number = 3;
     thrusting: boolean = false;
+    private timeSinceLastShot: number = 0;
 
     constructor({ position, velocity, rotation, shape, scale, color }: 
                 { position: Position, velocity: Velocity, rotation: number, shape: Shape, scale: number, color: string }) 
@@ -52,9 +53,17 @@ export default class Player extends Entity {
 
         this.velocity.x *= Math.pow(GAME_SETTINGS.FRICTION, deltaTime);
         this.velocity.y *= Math.pow(GAME_SETTINGS.FRICTION, deltaTime);
+
+        this.timeSinceLastShot += deltaTime;
     }
 
-    public spawnBullet(): Bullet {
+    public spawnBullet(): Bullet | null {
+        // Fire rate limiting
+        if (this.timeSinceLastShot < PLAYER_SETTINGS.FIRE_RATE) {
+            return null;
+        }
+        this.timeSinceLastShot = 0;
+
         // 5 is the x coord of the "nose" of the triangle
         const noseDistance = 5 * this.scale;
         return new Bullet({

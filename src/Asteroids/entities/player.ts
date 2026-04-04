@@ -49,8 +49,8 @@ export default class Player extends Entity {
         this.position.x += this.velocity.x * deltaTime;
         this.position.y += this.velocity.y * deltaTime;
 
-        this.velocity.x *= GAME_SETTINGS.FRICTION;
-        this.velocity.y *= GAME_SETTINGS.FRICTION;
+        this.velocity.x *= Math.pow(GAME_SETTINGS.FRICTION, deltaTime);
+        this.velocity.y *= Math.pow(GAME_SETTINGS.FRICTION, deltaTime);
     }
 }
 

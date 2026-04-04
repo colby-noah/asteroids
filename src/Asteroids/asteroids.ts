@@ -41,8 +41,11 @@ export default class Asteroids {
         this.asteroids.push(testAsteroid);
     }
 
-    public update() {
-        // Handle input
+    public init() {
+        requestAnimationFrame(this.gameLoop);
+    }
+
+    private handleInput() {
         if (this.input.keys.w) {
             this.player.moveForward(this.deltaTime);
         }
@@ -59,6 +62,9 @@ export default class Asteroids {
             this.player.rotate(this.deltaTime, 1);
         }
 
+    }
+
+    private update() {
         this.player.handleBoundaries(this.boundaries);
         this.player.update(this.deltaTime);
 
@@ -77,7 +83,7 @@ export default class Asteroids {
         }
     }
 
-    public draw() {
+    private draw() {
         // Reset screen
         this.ctx.fillStyle = "black";
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
@@ -90,7 +96,7 @@ export default class Asteroids {
     }
 
     // Arrow function preserves 'this' context for requestAnimationFrame callback
-    public gameLoop = (timestamp: DOMHighResTimeStamp) => {
+    private gameLoop = (timestamp: DOMHighResTimeStamp) => {
         // Delta time
         if (timestamp < this.lastFrameTimeMs + (1000 / GAME_SETTINGS.MAX_FPS)) {
             requestAnimationFrame(this.gameLoop);
@@ -99,6 +105,9 @@ export default class Asteroids {
         this.deltaTime += timestamp - this.lastFrameTimeMs;
         this.lastFrameTimeMs = timestamp;
 
+        this.handleInput();
+
+        // Fixed timestep update
         while (this.deltaTime >= GAME_SETTINGS.TIMESTEP) {
             this.update();
             this.deltaTime -= GAME_SETTINGS.TIMESTEP;
@@ -108,9 +117,6 @@ export default class Asteroids {
         requestAnimationFrame(this.gameLoop);
     }
 
-    public init() {
-        requestAnimationFrame(this.gameLoop);
-    }
 
     private calculateBoundaries(buffer: number = GAME_SETTINGS.BOUNDARY_BUFFER): Boundaries {
         return {

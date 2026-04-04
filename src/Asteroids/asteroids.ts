@@ -1,3 +1,4 @@
+import type { Boundaries } from "./types";
 import { GAME_SETTINGS, PLAYER_SETTINGS } from "./constants";
 import Input from "./input";
 import Player from "./entities/player";
@@ -6,6 +7,7 @@ import Asteroid from "./entities/asteroid";
 
 export default class Asteroids {
     ctx: CanvasRenderingContext2D;
+    boundaries: Boundaries;
 
     // Game loop time variables
     deltaTime: number = 0;
@@ -17,6 +19,7 @@ export default class Asteroids {
 
     constructor({ ctx }: { ctx: CanvasRenderingContext2D }) {
         this.ctx = ctx;
+        this.boundaries = this.calculateBoundaries();
         this.input = new Input();
         this.player = new Player({
             position: { x: this.ctx.canvas.width / 2, y: this.ctx.canvas.height / 2 },
@@ -56,13 +59,13 @@ export default class Asteroids {
             this.player.rotate(this.deltaTime, 1);
         }
 
-        this.player.handleBoundaries();
+        this.player.handleBoundaries(this.boundaries);
         this.player.update(this.deltaTime);
 
         // Update all asteroids 
         this.asteroids.forEach(a => {
-            a.handleBoundaries();
-            a.update();
+            a.handleBoundaries(this.boundaries);
+            a.update(this.deltaTime);
         });
 
         // Check asteroid collisions
@@ -107,5 +110,14 @@ export default class Asteroids {
 
     public init() {
         requestAnimationFrame(this.gameLoop);
+    }
+
+    private calculateBoundaries(buffer: number = GAME_SETTINGS.BOUNDARY_BUFFER): Boundaries {
+        return {
+            MIN_X: -buffer, 
+            MIN_Y: -buffer, 
+            MAX_X: this.ctx.canvas.width + buffer, 
+            MAX_Y: this.ctx.canvas.height + buffer
+        };
     }
 }

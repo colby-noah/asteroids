@@ -5,14 +5,9 @@ export const GAME_SETTINGS = {
     // Physics
     FRICTION: 0.9995,
     RADIUS_MODIFIER: 0.8,
-
-    // World
-    WORLD_BOUNDARIES: {
-        MIN_X: -100,
-        MIN_Y: -100,
-        MAX_X: 800,
-        MAX_Y: 800,
-    }
+    
+    // Non-visible part of the world on the edges
+    BOUNDARY_BUFFER: 100
 } as const;
 
 export const PLAYER_SETTINGS = {

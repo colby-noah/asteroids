@@ -1,4 +1,4 @@
-import type { Position, Velocity, Shape } from "../types";
+import type { Position, Velocity, Shape, Boundaries } from "../types";
 import { GAME_SETTINGS } from "../constants";
 
 
@@ -25,19 +25,19 @@ export default abstract class Entity {
         this.radius = this.calculateRadius();
     }
 
-    public handleBoundaries(): void {
-        if (this.position.x > GAME_SETTINGS.WORLD_BOUNDARIES.MAX_X) {
-            this.position.x = GAME_SETTINGS.WORLD_BOUNDARIES.MIN_X;
+    public handleBoundaries(boundaries: Boundaries): void {
+        if (this.position.x > boundaries.MAX_X) {
+            this.position.x = boundaries.MIN_X;
         }
-        else if (this.position.x < GAME_SETTINGS.WORLD_BOUNDARIES.MIN_X) {
-            this.position.x = GAME_SETTINGS.WORLD_BOUNDARIES.MAX_X;
+        else if (this.position.x < boundaries.MIN_X) {
+            this.position.x = boundaries.MAX_X;
         }
 
-        if (this.position.y > GAME_SETTINGS.WORLD_BOUNDARIES.MAX_Y) {
-            this.position.y = GAME_SETTINGS.WORLD_BOUNDARIES.MIN_Y;
+        if (this.position.y > boundaries.MAX_Y) {
+            this.position.y = boundaries.MIN_Y;
         }
-        else if (this.position.y < GAME_SETTINGS.WORLD_BOUNDARIES.MIN_Y) {
-            this.position.y = GAME_SETTINGS.WORLD_BOUNDARIES.MAX_Y;
+        else if (this.position.y < boundaries.MIN_Y) {
+            this.position.y = boundaries.MAX_Y;
         }
     };
 

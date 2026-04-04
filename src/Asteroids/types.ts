@@ -9,3 +9,10 @@ export interface Velocity {
 };
 
 export type Shape = [number, number][][];
+
+export type Boundaries = {
+    MIN_X: number;
+    MIN_Y: number;
+    MAX_X: number;
+    MAX_Y: number;
+}

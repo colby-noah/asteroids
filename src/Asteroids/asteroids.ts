@@ -98,6 +98,11 @@ export default class Asteroids {
                 // Handle collisions
             }
             // Bullet collisions here
+            for (const bullet of this.bullets) {
+                if (bullet.collidesWith(asteroid)) {
+                    console.log("Bullet hit asteroid!");
+                }
+            }
         }
     }
 

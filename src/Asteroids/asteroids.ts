@@ -86,7 +86,8 @@ export default class Asteroids {
 
         // Update all bullets
         this.bullets.forEach(b => {
-            b.handleBoundaries(this.boundaries);
+            // Bullets don't wrap in the original game
+            // b.handleBoundaries(this.boundaries);
             b.update(this.deltaTime);
         });
         this.bullets = this.bullets.filter(b => !b.isExpired);

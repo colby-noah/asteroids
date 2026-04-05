@@ -12,7 +12,7 @@ export const GAME_SETTINGS = {
 
 export const PLAYER_SETTINGS = {
     ACCELERATION: 0.00025, 
-    ROTATION_SPEED: 0.002, 
+    ROTATION_SPEED: 0.0025, 
     MAX_SPEED: 0.25, 
     FIRE_RATE: 500, // Milliseconds 
     SHAPE: [

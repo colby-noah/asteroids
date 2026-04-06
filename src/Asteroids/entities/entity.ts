@@ -8,6 +8,8 @@ export default abstract class Entity {
     velocity: Velocity;
     rotation: number;   // In radians
 
+    destroyed: boolean = false;
+
     // Appearance
     shape: Shape;
     scale: number;

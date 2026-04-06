@@ -75,6 +75,7 @@ export default class Asteroids {
     }
 
     private update() {
+        // Update the player
         this.player.handleBoundaries(this.boundaries);
         this.player.update(this.deltaTime);
 
@@ -90,7 +91,6 @@ export default class Asteroids {
             // b.handleBoundaries(this.boundaries);
             b.update(this.deltaTime);
         });
-        this.bullets = this.bullets.filter(b => !b.isExpired);
 
         // Check asteroid collisions
         for (const asteroid of this.asteroids) {
@@ -100,10 +100,15 @@ export default class Asteroids {
             // Bullet collisions here
             for (const bullet of this.bullets) {
                 if (bullet.collidesWith(asteroid)) {
-                    console.log("Bullet hit asteroid!");
+                    bullet.destroyed = true;
                 }
             }
+            
         }
+
+        // Destroy Entities
+        this.bullets = this.bullets.filter(b => !b.isExpired);
+        this.cleanUpAllDestroyed();
     }
 
     private draw() {
@@ -150,5 +155,10 @@ export default class Asteroids {
             MAX_X: this.ctx.canvas.width + buffer, 
             MAX_Y: this.ctx.canvas.height + buffer
         };
+    }
+
+    private cleanUpAllDestroyed() {
+        this.asteroids = this.asteroids.filter(a => !a.destroyed);
+        this.bullets = this.bullets.filter(b => !b.destroyed);
     }
 }

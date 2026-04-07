@@ -34,6 +34,11 @@ export const PLAYER_SETTINGS = {
 
 export const ASTEROID_SETTINGS = {
     MAX_SPEED: 30,
+    SIZE_TO_SCALE: {
+        "small": 4,
+        "medium": 8, 
+        "large": 12
+    }, 
     POSSIBLE_SHAPES: [
         // 0
         [

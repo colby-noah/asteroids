@@ -1,5 +1,5 @@
 import type { Boundaries } from "./types";
-import { GAME_SETTINGS, PLAYER_SETTINGS } from "./constants";
+import { GAME_SETTINGS, PLAYER_SETTINGS, ASTEROID_SETTINGS } from "./constants";
 import Input from "./input";
 import Player from "./entities/player";
 import Asteroid from "./entities/asteroid";
@@ -36,7 +36,7 @@ export default class Asteroids {
             position: { x: this.ctx.canvas.width / 2, y: this.ctx.canvas.height / 2 },
             velocity: { x: 0, y: 0 },
             rotation: 0,
-            scale: 10,
+            size: "large",
             color: "white",
         });
 

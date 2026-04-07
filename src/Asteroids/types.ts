@@ -1,3 +1,6 @@
+import { ASTEROID_SETTINGS } from "./constants";
+
+
 export interface Position {
     x: number;
     y: number;
@@ -16,3 +19,5 @@ export type Boundaries = {
     MAX_X: number;
     MAX_Y: number;
 }
+
+export type AsteroidSizes = keyof typeof ASTEROID_SETTINGS.SIZE_TO_SCALE;

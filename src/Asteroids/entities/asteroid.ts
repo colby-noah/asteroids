@@ -1,4 +1,4 @@
-import type { Position, Velocity, Shape } from "../types";
+import type { Position, Velocity, Shape, AsteroidSizes } from "../types";
 import { ASTEROID_SETTINGS } from "../constants";
 import Entity from "./entity"
 
@@ -14,12 +14,15 @@ export default class Asteroid extends Entity {
         ) as Shape;
     }
 
-    constructor({ position, velocity, rotation, shape, scale, color }: 
-                { position: Position, velocity: Velocity, rotation: number, shape?: Shape, scale: number, color: string }
+    size: AsteroidSizes;
+
+    constructor({ position, velocity, rotation, shape, color, size }: 
+                { position: Position, velocity: Velocity, rotation: number, shape?: Shape, color: string, size: AsteroidSizes }
     ) {
         const asteroidShape: Shape = shape ?? Asteroid.getRandomShape();
 
-        super({ position, velocity, rotation, shape: asteroidShape, scale, color });
+        super({ position, velocity, rotation, shape: asteroidShape, scale: ASTEROID_SETTINGS.SIZE_TO_SCALE[size], color });
+        this.size = size;
     }
 
     public update(deltaTime: number) {

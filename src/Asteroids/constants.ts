@@ -1,5 +1,5 @@
 export const GAME_SETTINGS = {
-    MAX_FPS: 60,
+    MAX_FPS: 144,
     TIMESTEP: 1000 / 60,
 
     // Physics
@@ -34,6 +34,7 @@ export const PLAYER_SETTINGS = {
 
 export const ASTEROID_SETTINGS = {
     MAX_SPEED: 30,
+    SPLIT_SPEED: 0.1, 
     SIZE_TO_SCALE: {
         "small": 4,
         "medium": 8, 

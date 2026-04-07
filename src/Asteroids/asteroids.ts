@@ -1,4 +1,4 @@
-import type { Boundaries } from "./types";
+import type { Boundaries, AsteroidSizes } from "./types";
 import { GAME_SETTINGS, PLAYER_SETTINGS, ASTEROID_SETTINGS } from "./constants";
 import Input from "./input";
 import Player from "./entities/player";
@@ -101,6 +101,7 @@ export default class Asteroids {
             for (const bullet of this.bullets) {
                 if (bullet.collidesWith(asteroid)) {
                     bullet.destroyed = true;
+                    this.splitAsteroid(asteroid);
                 }
             }
             
@@ -160,5 +161,28 @@ export default class Asteroids {
     private cleanUpAllDestroyed() {
         this.asteroids = this.asteroids.filter(a => !a.destroyed);
         this.bullets = this.bullets.filter(b => !b.destroyed);
+    }
+
+    public splitAsteroid(asteroid: Asteroid) {
+        const newAsteroidSize: AsteroidSizes | null = asteroid.size === "large" ? "medium" 
+                                                    : asteroid.size === "medium" ? "small" 
+                                                    : null;
+
+        if (newAsteroidSize) {
+            for (let i = 0; i < 2; i++) {
+                this.asteroids.push(new Asteroid({
+                    position: { x: asteroid.position.x, y: asteroid.position.y }, 
+                    velocity: {
+                        x: (Math.random() - 0.5) * ASTEROID_SETTINGS.SPLIT_SPEED, 
+                        y: (Math.random() - 0.5) * ASTEROID_SETTINGS.SPLIT_SPEED
+                    }, 
+                    rotation: Math.random() * Math.PI * 2, 
+                    size: newAsteroidSize, 
+                    color: "white"
+                }));
+            }
+        }
+
+        asteroid.destroyed = true;
     }
 }

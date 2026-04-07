@@ -26,6 +26,8 @@ export default class Asteroid extends Entity {
     }
 
     public update(deltaTime: number) {
+        this.position.x += this.velocity.x * deltaTime;
+        this.position.y += this.velocity.y * deltaTime;
     }
 }
 

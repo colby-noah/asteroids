@@ -44,8 +44,6 @@ export default abstract class Entity {
     };
 
     public draw(ctx: CanvasRenderingContext2D): void {
-        if (!ctx) return; 
-
         // Save original context before rotating
         ctx.save();
 
@@ -53,6 +51,9 @@ export default abstract class Entity {
         ctx.translate(this.position.x, this.position.y);
         ctx.rotate(this.rotation);
         ctx.translate(-this.position.x, -this.position.y);
+
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = 2;
 
         // Draw
         for (const path of this.shape) {
@@ -76,10 +77,6 @@ export default abstract class Entity {
             }
 
             ctx.closePath();
-
-            // Color lines
-            ctx.strokeStyle = this.color;
-            ctx.lineWidth = 2;
             ctx.stroke();
         };
 

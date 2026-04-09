@@ -24,7 +24,7 @@ export default class Asteroids {
         this.boundaries = this.calculateBoundaries();
         this.input = new Input();
         this.player = new Player({
-            position: { x: this.ctx.canvas.width / 2, y: this.ctx.canvas.height / 2 },
+            position: { x: this.ctx.canvas.width / 2, y: this.ctx.canvas.height / 4 },
             velocity: { x: 0, y: 0 },
             rotation: 0,
             shape: PLAYER_SETTINGS.SHAPE.map(path => path.map((point) => point as [number, number])),
@@ -95,7 +95,7 @@ export default class Asteroids {
         // Check asteroid collisions
         for (const asteroid of this.asteroids) {
             if (this.player.collidesWith(asteroid)) {
-                // Handle collisions
+                this.player.destroyed = true;
             }
             // Bullet collisions here
             for (const bullet of this.bullets) {
@@ -104,7 +104,6 @@ export default class Asteroids {
                     this.splitAsteroid(asteroid);
                 }
             }
-            
         }
 
         // Destroy Entities
@@ -118,7 +117,9 @@ export default class Asteroids {
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
         // Draw the player
-        this.player.draw(this.ctx);
+        if (!this.player.destroyed) {
+            this.player.draw(this.ctx);
+        }
 
         // Draw all asteroids 
         this.asteroids.forEach(a => a.draw(this.ctx));
@@ -137,7 +138,9 @@ export default class Asteroids {
         this.deltaTime += timestamp - this.lastFrameTimeMs;
         this.lastFrameTimeMs = timestamp;
 
-        this.handleInput();
+        if (!this.player.destroyed) {
+            this.handleInput();
+        }
 
         // Fixed timestep update
         while (this.deltaTime >= GAME_SETTINGS.TIMESTEP) {

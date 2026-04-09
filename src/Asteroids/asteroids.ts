@@ -4,20 +4,23 @@ import Input from "./input";
 import Player from "./entities/player";
 import Asteroid from "./entities/asteroid";
 import Bullet from "./entities/bullet";
+import Effect from "./effects/effect";
+import Explosion from "./effects/explosion";
 
 
 export default class Asteroids {
-    ctx: CanvasRenderingContext2D;
-    boundaries: Boundaries;
+    private ctx: CanvasRenderingContext2D;
+    private boundaries: Boundaries;
 
     // Game loop time variables
-    deltaTime: number = 0;
-    lastFrameTimeMs: DOMHighResTimeStamp = 0;
+    private deltaTime: number = 0;
+    private lastFrameTimeMs: DOMHighResTimeStamp = 0;
 
-    input: Input;
-    player: Player;
-    asteroids: Asteroid[] = [];
-    bullets: Bullet[] = [];
+    private input: Input;
+    private player: Player;
+    private asteroids: Asteroid[] = [];
+    private bullets: Bullet[] = [];
+    private effects: Effect[] = [];
 
     constructor({ ctx }: { ctx: CanvasRenderingContext2D }) {
         this.ctx = ctx;
@@ -75,22 +78,17 @@ export default class Asteroids {
     }
 
     private update() {
-        // Update the player
         this.player.handleBoundaries(this.boundaries);
         this.player.update(this.deltaTime);
 
-        // Update all asteroids 
         this.asteroids.forEach(a => {
             a.handleBoundaries(this.boundaries);
             a.update(this.deltaTime);
         });
 
-        // Update all bullets
-        this.bullets.forEach(b => {
-            // Bullets don't wrap in the original game
-            // b.handleBoundaries(this.boundaries);
-            b.update(this.deltaTime);
-        });
+        // Bullets and effects don't wrap the screen
+        this.bullets.forEach(b => b.update(this.deltaTime));
+        this.effects.forEach(e => e.update(this.deltaTime));
 
         // Check asteroid collisions
         for (const asteroid of this.asteroids) {
@@ -101,13 +99,17 @@ export default class Asteroids {
             for (const bullet of this.bullets) {
                 if (bullet.collidesWith(asteroid)) {
                     bullet.destroyed = true;
+
+                    this.effects.push(new Explosion({
+                        position: { x: asteroid.position.x, y: asteroid.position.y }
+                    }));
+
                     this.splitAsteroid(asteroid);
                 }
             }
         }
 
         // Destroy Entities
-        this.bullets = this.bullets.filter(b => !b.isExpired);
         this.cleanUpAllDestroyed();
     }
 
@@ -121,11 +123,9 @@ export default class Asteroids {
             this.player.draw(this.ctx);
         }
 
-        // Draw all asteroids 
         this.asteroids.forEach(a => a.draw(this.ctx));
-        
-        // Draw all bullets
         this.bullets.forEach(b => b.draw(this.ctx));
+        this.effects.forEach(e => e.draw(this.ctx));
     }
 
     // Arrow function preserves 'this' context for requestAnimationFrame callback
@@ -163,7 +163,8 @@ export default class Asteroids {
 
     private cleanUpAllDestroyed() {
         this.asteroids = this.asteroids.filter(a => !a.destroyed);
-        this.bullets = this.bullets.filter(b => !b.destroyed);
+        this.bullets = this.bullets.filter(b => !b.destroyed && !b.isExpired);
+        this.effects = this.effects.filter(e => !e.isExpired);
     }
 
     public splitAsteroid(asteroid: Asteroid) {

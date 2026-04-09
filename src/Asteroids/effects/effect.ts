@@ -1,7 +1,7 @@
-import { Position } from "./types";
+import type { Position } from "../types";
 
 
-export default class Effect {
+export default abstract class Effect {
     public position: Position;
     public lifetime: number = 0;
     public readonly maxLifetime: number;
@@ -10,6 +10,8 @@ export default class Effect {
         this.position = position;
         this.maxLifetime = maxLifetime;
     }
+
+    public abstract draw(ctx: CanvasRenderingContext2D): void;
 
     public get isExpired(): boolean {
         return this.lifetime >= this.maxLifetime;
@@ -21,9 +23,5 @@ export default class Effect {
     
     public update(deltaTime: number): void {
         this.lifetime += deltaTime;
-    }
-
-    public draw(ctx: CanvasRenderingContext2D): void {
-        // Visual implementation
     }
 }

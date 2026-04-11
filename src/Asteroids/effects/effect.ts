@@ -18,7 +18,7 @@ export default abstract class Effect {
     }
 
     public get progress(): number {
-        return this.lifetime / this.maxLifetime;
+        return Math.min(this.lifetime / this.maxLifetime, 1);
     }
     
     public update(deltaTime: number): void {

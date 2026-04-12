@@ -6,6 +6,7 @@ import Asteroid from "./entities/asteroid";
 import Bullet from "./entities/bullet";
 import Effect from "./effects/effect";
 import Explosion from "./effects/explosion";
+import PlayerDeath from "./effects/player-death";
 
 
 export default class Asteroids {
@@ -92,8 +93,13 @@ export default class Asteroids {
 
         // Check asteroid collisions
         for (const asteroid of this.asteroids) {
-            if (this.player.collidesWith(asteroid)) {
+            if (!this.player.destroyed && this.player.collidesWith(asteroid)) {
                 this.player.destroyed = true;
+
+                this.effects.push(new PlayerDeath({
+                    position: { x: this.player.position.x, y: this.player.position.y }, 
+                    playerScale: this.player.scale
+                }));
             }
             // Bullet collisions here
             for (const bullet of this.bullets) {

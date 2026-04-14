@@ -21,3 +21,10 @@ export type Boundaries = {
 }
 
 export type AsteroidSizes = keyof typeof ASTEROID_SETTINGS.SIZE_TO_SCALE;
+
+export enum GameState {
+    PLAYING,
+    PLAYER_DEAD,
+    ROUND_CLEAR,
+    GAME_OVER
+}

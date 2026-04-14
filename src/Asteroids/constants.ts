@@ -7,7 +7,13 @@ export const GAME_SETTINGS = {
     RADIUS_MODIFIER: 0.8,
     
     // Non-visible part of the world on the edges
-    BOUNDARY_BUFFER: 100
+    BOUNDARY_BUFFER: 100, 
+
+    // Game state
+    STARTING_LIVES: 3,
+    DEAD_DURATION: 3000, 
+    ROUND_CLEAR_DURATION: 4000, 
+    SPAWN_SAFE_RADIUS: 150
 } as const;
 
 export const PLAYER_SETTINGS = {
@@ -35,11 +41,19 @@ export const PLAYER_SETTINGS = {
 export const ASTEROID_SETTINGS = {
     MAX_SPEED: 30,
     SPLIT_SPEED: 0.1, 
+    SPAWN_SPEED: 0.05, 
     SIZE_TO_SCALE: {
         "small": 4,
         "medium": 8, 
         "large": 12
     }, 
+    SCORE: {
+        "small": 100, 
+        "medium": 50, 
+        "large": 20
+    },  
+    STARTING_COUNT: 4, 
+    COUNT_INCREMENT: 2,
     POSSIBLE_SHAPES: [
         // 0
         [

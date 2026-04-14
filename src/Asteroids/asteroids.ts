@@ -1,4 +1,5 @@
-import type { Boundaries, AsteroidSizes } from "./types";
+import type { Position, Boundaries, AsteroidSizes } from "./types";
+import { GameState } from "./types";
 import { GAME_SETTINGS, PLAYER_SETTINGS, ASTEROID_SETTINGS } from "./constants";
 import Input from "./input";
 import Player from "./entities/player";
@@ -22,6 +23,13 @@ export default class Asteroids {
     private asteroids: Asteroid[] = [];
     private bullets: Bullet[] = [];
     private effects: Effect[] = [];
+
+    // Game state
+    private state: GameState = GameState.PLAYING;
+    private score: number = 0;
+    private lives: number = GAME_SETTINGS.STARTING_LIVES;
+    private round: number = 1;
+    private deadTimer: number = 0;
 
     constructor({ ctx }: { ctx: CanvasRenderingContext2D }) {
         this.ctx = ctx;
@@ -78,23 +86,16 @@ export default class Asteroids {
         }
     }
 
-    private update() {
-        this.player.handleBoundaries(this.boundaries);
-        this.player.update(this.deltaTime);
-
-        this.asteroids.forEach(a => {
-            a.handleBoundaries(this.boundaries);
-            a.update(this.deltaTime);
-        });
-
-        // Bullets and effects don't wrap the screen
-        this.bullets.forEach(b => b.update(this.deltaTime));
-        this.effects.forEach(e => e.update(this.deltaTime));
-
+    private handleCollisions() {
         // Check asteroid collisions
         for (const asteroid of this.asteroids) {
             if (!this.player.destroyed && this.player.collidesWith(asteroid)) {
                 this.player.destroyed = true;
+
+                // Update game state for player death
+                this.lives--;
+                this.state = GameState.PLAYER_DEAD;
+                this.deadTimer = 0;
 
                 this.effects.push(new PlayerDeath({
                     position: { x: this.player.position.x, y: this.player.position.y }, 
@@ -106,6 +107,8 @@ export default class Asteroids {
                 if (bullet.collidesWith(asteroid)) {
                     bullet.destroyed = true;
 
+                    this.score += ASTEROID_SETTINGS.SCORE[asteroid.size];
+
                     this.effects.push(new Explosion({
                         position: { x: asteroid.position.x, y: asteroid.position.y }
                     }));
@@ -114,9 +117,93 @@ export default class Asteroids {
                 }
             }
         }
+    }
+
+    private randomSpawnPosition() {
+        const safeRadiusSq = GAME_SETTINGS.SPAWN_SAFE_RADIUS ** 2;
+        let position: Position;
+        let dx: number;
+        let dy: number;
+
+        do {
+            position = {
+                x: Math.random() * this.ctx.canvas.width,
+                y: Math.random() * this.ctx.canvas.height
+            };
+
+            dx = position.x - this.player.position.x;
+            dy = position.y - this.player.position.y;
+        } while (dx * dx + dy + dy < safeRadiusSq);
+
+        return position
+    }
+
+    private spawnAsteroids() {
+        // Number of asteroids to spawn
+        const count = ASTEROID_SETTINGS.STARTING_COUNT + (this.round - 1) * ASTEROID_SETTINGS.COUNT_INCREMENT;
+        for (let i = 0; i < count; i++) {
+            const position = this.randomSpawnPosition();
+            this.asteroids.push(new Asteroid({
+                position,
+                velocity: {
+                    x: (Math.random() - 0.5) * ASTEROID_SETTINGS.SPAWN_SPEED, 
+                    y: (Math.random() - 0.5) * ASTEROID_SETTINGS.SPAWN_SPEED 
+                }, 
+                rotation: Math.random() * (Math.PI * 2),
+                size: "large", 
+                color: "white"
+            }));
+        }
+    }
+
+    private handlePlayerDead() {
+        this.deadTimer += this.deltaTime;
+        if (this.deadTimer >= GAME_SETTINGS.DEAD_DURATION) {
+            if (this.lives > 0) {
+                //this.respawnPlayer();
+                this.state = GameState.PLAYING;
+            }
+            else {
+                this.state = GameState.GAME_OVER;
+            }
+        }
+    }
+
+    private handleRoundCleared() {
+        this.round++;
+        this.spawnAsteroids();
+        this.state = GameState.PLAYING;
+    }
+
+    private update() {
+        if (this.state === GameState.PLAYING) {
+            this.player.handleBoundaries(this.boundaries);
+            this.player.update(this.deltaTime);
+        }
+
+        this.asteroids.forEach(a => {
+            a.handleBoundaries(this.boundaries);
+            a.update(this.deltaTime);
+        });
+
+        // Bullets and effects don't wrap the screen
+        this.bullets.forEach(b => b.update(this.deltaTime));
+        this.effects.forEach(e => e.update(this.deltaTime));
+
+        this.handleCollisions();
 
         // Destroy Entities
         this.cleanUpAllDestroyed();
+
+        if (this.state === GameState.PLAYING && this.asteroids.length === 0) {
+            this.state = GameState.ROUND_CLEAR;
+        }
+        else if (this.state === GameState.PLAYER_DEAD) {
+            this.handlePlayerDead();
+        }
+        else if (this.state === GameState.ROUND_CLEAR) {
+            this.handleRoundCleared();
+        }
     }
 
     private draw() {
@@ -144,7 +231,7 @@ export default class Asteroids {
         this.deltaTime += timestamp - this.lastFrameTimeMs;
         this.lastFrameTimeMs = timestamp;
 
-        if (!this.player.destroyed) {
+        if (this.state === GameState.PLAYING) {
             this.handleInput();
         }
 

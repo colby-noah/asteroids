@@ -5,7 +5,6 @@ import Bullet from "./bullet"
 
 
 export default class Player extends Entity {
-    lives: number = 3;
     thrusting: boolean = false;
     private timeSinceLastShot: number = 0;
 

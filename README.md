@@ -1,42 +1,73 @@
-# asteroids
+# Asteroids
 
-This template should help get you started developing with Vue 3 in Vite.
+A semi-faithful recreation of the classic 1979 Atari arcade game, built with TypeScript and Vue.js using the HTML5 Canvas API.
 
-## Recommended IDE Setup
+## Tech Stack
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- **TypeScript** — statically typed throughout
+- **Vue.js** — app shell and canvas mounting
+- **Vite** — dev server and build tooling
+- **HTML5 Canvas API** — all game rendering
 
-## Recommended Browser Setup
+## Features
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+- Player ship with rotation, thrust, and inertia
+- Asteroids split into smaller pieces when hit
+- Screen wrapping for player and asteroids
+- Circle collision detection (squared distance optimization)
+- Simple effects engine (asteroids explode, player ship breaks into lines)
+- Scoring based on asteroid size (large: 20pts, medium: 50pts, small: 100pts)
+- Game state machine (playing, player dead, round clear, game over)
+- Lives system with respawn and invincibility window
+- Progressive round difficulty (more asteroids each round)
+- Cool thruster flame animation
 
-## Type Support for `.vue` Imports in TS
+## Controls
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+| Key | Action |
+|-----|--------|
+| `W` | Thrust forward |
+| `A` | Rotate left |
+| `D` | Rotate right |
+| `Space` | Fire |
 
-## Customize configuration
+## Project Structure
 
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
+```
+src/
+├── entities/
+│   ├── entity.ts        # Abstract base class (position, velocity, collision)
+│   ├── player.ts        # Player ship, movement, bullet spawning
+│   ├── asteroid.ts      # Asteroid entity, random shape generation
+│   └── bullet.ts        # Bullet entity with lifetime expiry
+├── effects/
+│   ├── effect.ts        # Abstract base class (lifetime, progress)
+│   ├── explosion.ts     # Particle burst effect on asteroid death
+│   └── player-death.ts  # Floating line fragments on player death
+├── game.ts              # Main game class, loop, state machine
+├── input.ts             # Keyboard input handler
+├── constants.ts         # All tunable game values
+└── types.ts             # Shared types and enums
 ```
 
-### Compile and Hot-Reload for Development
+## Getting Started
 
-```sh
+```bash
+npm install
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
-
-```sh
+```bash
 npm run build
 ```
+
+## Game Architecture
+
+The game runs on a fixed timestep loop with delta time accumulation, keeping physics framerate-independent. Entities share a common base class providing position, velocity, rotation, scale, and circle collision detection. Effects use a normalized `progress` value (0–1) derived from elapsed lifetime, driving both movement easing and opacity fade.
+
+## Planned Features
+
+- Title screen
+- Alien saucers
+- High score table
+- Sound effects

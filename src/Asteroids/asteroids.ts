@@ -103,6 +103,7 @@ export default class Asteroids {
             }
             // Bullet collisions here
             for (const bullet of this.bullets) {
+                if (bullet.destroyed) continue;
                 if (bullet.collidesWith(asteroid)) {
                     bullet.destroyed = true;
 
@@ -111,6 +112,7 @@ export default class Asteroids {
                     }));
 
                     this.splitAsteroid(asteroid);
+                    break;
                 }
             }
         }

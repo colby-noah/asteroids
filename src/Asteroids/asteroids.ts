@@ -29,7 +29,9 @@ export default class Asteroids {
     private score: number = 0;
     private lives: number = GAME_SETTINGS.STARTING_LIVES;
     private round: number = 1;
+
     private deadTimer: number = 0;
+    private roundClearTimer: number = 0;
 
     constructor({ ctx }: { ctx: CanvasRenderingContext2D }) {
         this.ctx = ctx;
@@ -135,7 +137,7 @@ export default class Asteroids {
 
             dx = position.x - this.player.position.x;
             dy = position.y - this.player.position.y;
-        } while (dx * dx + dy + dy < safeRadiusSq);
+        } while (((dx ** 2) + (dy ** 2)) < safeRadiusSq);
 
         return position
     }
@@ -172,13 +174,18 @@ export default class Asteroids {
     }
 
     private handleRoundCleared() {
-        this.round++;
-        this.spawnAsteroids();
-        this.state = GameState.PLAYING;
+        this.roundClearTimer += this.deltaTime;
+
+        if (this.roundClearTimer >= GAME_SETTINGS.ROUND_CLEAR_DURATION) {
+            this.roundClearTimer = 0;
+            this.round++;
+            this.spawnAsteroids();
+            this.state = GameState.PLAYING;
+        }
     }
 
     private update() {
-        if (this.state === GameState.PLAYING) {
+        if (!this.player.destroyed) {
             this.player.handleBoundaries(this.boundaries);
             this.player.update(this.deltaTime);
         }
@@ -233,7 +240,7 @@ export default class Asteroids {
         this.deltaTime += timestamp - this.lastFrameTimeMs;
         this.lastFrameTimeMs = timestamp;
 
-        if (this.state === GameState.PLAYING) {
+        if (!this.player.destroyed && (this.state === GameState.PLAYING || this.state === GameState.ROUND_CLEAR)) {
             this.handleInput();
         }
 

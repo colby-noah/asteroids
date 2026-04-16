@@ -19,7 +19,7 @@ export default class PlayerDeath extends Effect {
                 { position: Position, playerScale: number, maxLifetime?: number, maxRadius?: number, color?: string }) {
         super({ position, maxLifetime });
         // Base line length * scale of player
-        this.lineLength = 4 * playerScale;
+        this.lineLength = 6 * playerScale;
         this.maxRadius = maxRadius;
         this.color = color;
 

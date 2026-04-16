@@ -239,6 +239,9 @@ export default class Asteroids {
         }
         this.deltaTime += timestamp - this.lastFrameTimeMs;
         this.lastFrameTimeMs = timestamp;
+        
+        // Cap deltaTime to avoid death spiral after heavy frames 
+        this.deltaTime = Math.min(this.deltaTime, GAME_SETTINGS.MAX_DELTATIME);
 
         if (!this.player.destroyed && (this.state === GameState.PLAYING || this.state === GameState.ROUND_CLEAR)) {
             this.handleInput();

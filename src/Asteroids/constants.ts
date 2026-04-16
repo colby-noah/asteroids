@@ -1,6 +1,7 @@
 export const GAME_SETTINGS = {
     MAX_FPS: 144,
     TIMESTEP: 1000 / 60,
+    MAX_DELTATIME: 100,
 
     // Physics
     FRICTION: 0.9995,

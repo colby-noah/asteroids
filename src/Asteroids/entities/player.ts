@@ -8,6 +8,7 @@ export default class Player extends Entity {
     public invincible: boolean = false;
 
     private thrusting: boolean = false;
+    private thrusterTimer: number = 0;
     private timeSinceLastShot: number = 0;
 
     constructor({ position, velocity, rotation, shape, scale, color }: 
@@ -17,13 +18,11 @@ export default class Player extends Entity {
         this.rotation = 0;
     }
 
-    public controlThruster(on: boolean) {
-        if (on && !this.thrusting) {
-            this.thrusting = true;
+    public toggleThrusterAnimation(state: boolean) {
+        if (state && this.shape.length === 1) {
             this.shape.push(PLAYER_SETTINGS.THRUST_PATH.map(point => [...point]));
         }
-        else if (!on && this.thrusting) {
-            this.thrusting = false;
+        else if (!state && this.shape.length > 1) {
             this.shape.pop();
         }
     }
@@ -32,8 +31,12 @@ export default class Player extends Entity {
         this.velocity.x += Math.cos(this.rotation) * PLAYER_SETTINGS.ACCELERATION * deltaTime;
         this.velocity.y += Math.sin(this.rotation) * PLAYER_SETTINGS.ACCELERATION * deltaTime;
 
-        // Animate the thruster
-        this.controlThruster(true);
+        this.thrusting = true;
+    }
+
+    public stopThrusting() {
+        this.thrusting = false;
+        this.toggleThrusterAnimation(false);
     }
 
     public rotate(deltaTime: number, direction: 1 | -1) {
@@ -56,6 +59,16 @@ export default class Player extends Entity {
         this.velocity.y *= Math.pow(GAME_SETTINGS.FRICTION, deltaTime);
 
         this.timeSinceLastShot += deltaTime;
+
+        // Make the thruster animation flash
+        this.toggleThrusterAnimation(false);
+        if (this.thrusting) {
+            this.thrusterTimer += deltaTime;
+            if (this.thrusterTimer >= PLAYER_SETTINGS.THRUSTER_FLASH_DURATION) {
+                this.thrusterTimer = 0;
+                this.toggleThrusterAnimation(true);
+            }
+        }
     }
 
     public spawnBullet(): Bullet | null {

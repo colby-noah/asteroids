@@ -68,7 +68,7 @@ export default class Asteroids {
         }
         else {
             // Turn off thruster animation
-            this.player.controlThruster(false);
+            this.player.stopThrusting();
         }
 
         // Rotate left
@@ -243,8 +243,9 @@ export default class Asteroids {
         this.ctx.fillStyle = "black";
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
-        // Draw the player
-        if (!this.player.destroyed) {
+        // Draw the player, if they are invincible only draw them 
+        if (!this.player.destroyed && (!this.player.invincible || 
+                                        Math.floor(this.invincibleTimer / PLAYER_SETTINGS.INVINCIBLE_FLASH_DURATION) % 2 === 0)) {
             this.player.draw(this.ctx);
         }
 

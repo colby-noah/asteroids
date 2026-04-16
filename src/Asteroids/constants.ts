@@ -23,6 +23,8 @@ export const PLAYER_SETTINGS = {
     MAX_SPEED: 0.3, 
     FIRE_RATE: 500, // Milliseconds 
     INVINCIBLE_DURATION: 5000,
+    INVINCIBLE_FLASH_DURATION: 350,
+    THRUSTER_FLASH_DURATION: 100,
     SHAPE: [
         // Main triangle
         [

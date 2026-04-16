@@ -160,11 +160,22 @@ export default class Asteroids {
         }
     }
 
+    private respawnPlayer() {
+        this.player.position = {
+            x: this.ctx.canvas.width / 2,
+            y: this.ctx.canvas.height / 2
+        };
+
+        this.player.velocity = { x: 0, y: 0 };
+
+        this.player.destroyed = false;
+    }
+
     private handlePlayerDead() {
         this.deadTimer += this.deltaTime;
         if (this.deadTimer >= GAME_SETTINGS.DEAD_DURATION) {
             if (this.lives > 0) {
-                //this.respawnPlayer();
+                this.respawnPlayer();
                 this.state = GameState.PLAYING;
             }
             else {

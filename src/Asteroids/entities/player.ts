@@ -5,7 +5,9 @@ import Bullet from "./bullet"
 
 
 export default class Player extends Entity {
-    thrusting: boolean = false;
+    public invincible: boolean = false;
+
+    private thrusting: boolean = false;
     private timeSinceLastShot: number = 0;
 
     constructor({ position, velocity, rotation, shape, scale, color }: 

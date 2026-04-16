@@ -22,6 +22,7 @@ export const PLAYER_SETTINGS = {
     ROTATION_SPEED: 0.0025, 
     MAX_SPEED: 0.3, 
     FIRE_RATE: 500, // Milliseconds 
+    INVINCIBLE_DURATION: 5000,
     SHAPE: [
         // Main triangle
         [

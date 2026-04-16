@@ -32,6 +32,7 @@ export default class Asteroids {
 
     private deadTimer: number = 0;
     private roundClearTimer: number = 0;
+    private invincibleTimer: number = 0;
 
     constructor({ ctx }: { ctx: CanvasRenderingContext2D }) {
         this.ctx = ctx;
@@ -91,7 +92,7 @@ export default class Asteroids {
     private handleCollisions() {
         // Check asteroid collisions
         for (const asteroid of this.asteroids) {
-            if (!this.player.destroyed && this.player.collidesWith(asteroid)) {
+            if (!this.player.destroyed && !this.player.invincible && this.player.collidesWith(asteroid)) {
                 this.player.destroyed = true;
 
                 // Update game state for player death
@@ -161,13 +162,15 @@ export default class Asteroids {
     }
 
     private respawnPlayer() {
+        // Reset position & velocity
         this.player.position = {
             x: this.ctx.canvas.width / 2,
             y: this.ctx.canvas.height / 2
         };
-
         this.player.velocity = { x: 0, y: 0 };
 
+        // Respawn player as invincible
+        this.player.invincible = true;
         this.player.destroyed = false;
     }
 
@@ -199,6 +202,15 @@ export default class Asteroids {
         if (!this.player.destroyed) {
             this.player.handleBoundaries(this.boundaries);
             this.player.update(this.deltaTime);
+        }
+        if (this.player.invincible) {
+            if (this.invincibleTimer >= PLAYER_SETTINGS.INVINCIBLE_DURATION) {
+                this.player.invincible = false;
+                this.invincibleTimer = 0;
+            }
+            else {
+                this.invincibleTimer += this.deltaTime;
+            }
         }
 
         this.asteroids.forEach(a => {

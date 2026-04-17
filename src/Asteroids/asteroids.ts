@@ -13,6 +13,7 @@ import PlayerDeath from "./effects/player-death";
 export default class Asteroids {
     private ctx: CanvasRenderingContext2D;
     private boundaries: Boundaries;
+    private debug: boolean = true;
 
     // Game loop time variables
     private deltaTime: number = 0;
@@ -58,6 +59,27 @@ export default class Asteroids {
 
     public init() {
         requestAnimationFrame(this.gameLoop);
+    }
+
+    private drawDebug() {
+        const fps = Math.round(1000 / (this.deltaTime || 1));
+        const lines = [
+            `FPS: ${fps}`,
+            `# Asteroids: ${this.asteroids.length}`,
+            `# Bullets: ${this.bullets.length}`,
+            `# Effects: ${this.effects.length}`,
+            `State: ${this.state}`,
+            `Round: ${this.round}`,
+            `DeltaTime: ${this.deltaTime.toFixed(2)}ms`,
+        ];
+
+        this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+        this.ctx.fillRect(10, 10, 160, lines.length * 18 + 10);
+
+        this.ctx.fillStyle = "lime";
+        this.ctx.font = "14pt monospace";
+
+        lines.forEach((line, i) => { this.ctx.fillText(line, 16, 26 + i * 18); });
     }
 
     private handleInput() {
@@ -250,6 +272,10 @@ export default class Asteroids {
         this.asteroids.forEach(a => a.draw(this.ctx));
         this.bullets.forEach(b => b.draw(this.ctx));
         this.effects.forEach(e => e.draw(this.ctx));
+
+        if (this.debug) {
+            this.drawDebug();
+        }
     }
 
     // Arrow function preserves 'this' context for requestAnimationFrame callback

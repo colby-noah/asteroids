@@ -139,7 +139,7 @@ export const ASTEROID_SETTINGS = {
 } as const;
 
 export const BULLET_SETTINGS = {
-    RADIUS: 5, 
+    RADIUS: 3, 
     MAX_DISTANCE: 1000, 
     SPEED: 0.3
 } as const;

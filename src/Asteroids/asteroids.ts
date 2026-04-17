@@ -47,15 +47,13 @@ export default class Asteroids {
             color: "white",
         });
 
-        const testAsteroid = new Asteroid({
+        this.asteroids.push(new Asteroid({
             position: { x: this.ctx.canvas.width / 2, y: this.ctx.canvas.height / 2 },
             velocity: { x: 0, y: 0 },
             rotation: 0,
             size: "large",
             color: "white",
-        });
-
-        this.asteroids.push(testAsteroid);
+        }));
     }
 
     public init() {

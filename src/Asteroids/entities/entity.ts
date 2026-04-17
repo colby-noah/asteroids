@@ -89,7 +89,7 @@ export default abstract class Entity {
         const dx = this.position.x - other.position.x;
         const dy = this.position.y - other.position.y;
 
-        const distanceSquared = (dx * dx) + (dy * dy);
+        const distanceSquared = (dx ** 2) + (dy ** 2);
         const radiiSum = this.radius + other.radius;
 
         // Collision if the distanceSquared is less than the radiiSum squared

@@ -1,5 +1,4 @@
 export const GAME_SETTINGS = {
-    MAX_FPS: 60,
     TIMESTEP: 1000 / 60,
     MAX_DELTATIME: 100,
 

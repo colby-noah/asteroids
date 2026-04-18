@@ -289,14 +289,6 @@ export default class Asteroids {
     private gameLoop = (timestamp: DOMHighResTimeStamp) => {
         const frameTime = timestamp - this.lastFrameTimeMs;
 
-        /*
-        // Throttle FPS 
-        if (timestamp < this.lastFrameTimeMs + (1000 / GAME_SETTINGS.MAX_FPS)) {
-            requestAnimationFrame(this.gameLoop);
-            return;
-        }
-        */
-
         this.lastFrameDuration = frameTime;
         this.lastFrameTimeMs = timestamp;
         

@@ -12,50 +12,52 @@ import PlayerDeath from "./effects/player-death";
 
 export default class Asteroids {
     private ctx: CanvasRenderingContext2D;
+    private onGameOver: (score: number) => void;
+
+    private input: Input;
     private boundaries: Boundaries;
-    private debug: boolean = true;
 
     // Game loop time variables
     private accumulator: number = 0;
     private lastFrameTimeMs: DOMHighResTimeStamp = 0;
     private lastFrameDuration: number = 0;
 
-    private input: Input;
+    // Entities
     private player: Player;
     private asteroids: Asteroid[] = [];
     private bullets: Bullet[] = [];
     private effects: Effect[] = [];
 
     // Game state
+    private debug: boolean = false;
     private state: GameState = GameState.PLAYING;
     private score: number = 0;
     private lives: number = GAME_SETTINGS.STARTING_LIVES;
     private round: number = 1;
 
+    // Timers
     private deadTimer: number = 0;
     private roundClearTimer: number = 0;
     private invincibleTimer: number = 0;
 
-    constructor({ ctx }: { ctx: CanvasRenderingContext2D }) {
+    constructor({ ctx, onGameOver }: { ctx: CanvasRenderingContext2D, onGameOver: (score: number) => void }) {
         this.ctx = ctx;
+        this.onGameOver = onGameOver;
+
         this.boundaries = this.calculateBoundaries();
         this.input = new Input();
+
         this.player = new Player({
-            position: { x: this.ctx.canvas.width / 2, y: this.ctx.canvas.height / 4 },
+            position: { x: this.ctx.canvas.width / 2, y: this.ctx.canvas.height / 2 },
             velocity: { x: 0, y: 0 },
             rotation: 0,
             shape: PLAYER_SETTINGS.SHAPE.map(path => path.map((point) => point as [number, number])),
             scale: 10,
             color: "white",
         });
+        this.player.invincible = true;
 
-        this.asteroids.push(new Asteroid({
-            position: { x: this.ctx.canvas.width / 2, y: this.ctx.canvas.height / 2 },
-            velocity: { x: 0, y: 0 },
-            rotation: 0,
-            size: "large",
-            color: "white",
-        }));
+        this.spawnAsteroids();
     }
 
     public init() {
@@ -210,6 +212,7 @@ export default class Asteroids {
             }
             else {
                 this.state = GameState.GAME_OVER;
+                this.onGameOver(this.score);
             }
         }
     }
@@ -265,6 +268,40 @@ export default class Asteroids {
         }
     }
 
+    private drawHUD() {
+        this.ctx.fillStyle = "white";
+        this.ctx.font = "24px monospace";
+        this.ctx.fillText(this.score.toString(), GAME_SETTINGS.HUD_SCORE_START_X, GAME_SETTINGS.HUD_SCORE_START_Y);
+    }
+
+    private drawLives() {
+        const shipShape = PLAYER_SETTINGS.SHAPE;
+        const scale = 4;
+        const spacing = 35;
+
+        for (let i = 0; i < this.lives; i++) {
+            const x = GAME_SETTINGS.HUD_LIVES_START_X + i * spacing;
+            this.ctx.save();
+            this.ctx.translate(x, GAME_SETTINGS.HUD_LIVES_START_Y);
+            this.ctx.rotate(-Math.PI / 2); // Point the ship upward
+            this.ctx.strokeStyle = "white";
+            this.ctx.lineWidth = 1.5;
+
+            for (const path of shipShape) {
+                this.ctx.beginPath();
+                path.forEach(([px, py], index) => {
+                    const sx = px * scale;
+                    const sy = py * scale;
+                    index === 0 ? this.ctx.moveTo(sx, sy) : this.ctx.lineTo(sx, sy); 
+                });
+                this.ctx.closePath();
+                this.ctx.stroke();
+            }
+
+            this.ctx.restore();
+        }
+    }
+
     private draw() {
         // Reset screen
         this.ctx.fillStyle = "black";
@@ -282,6 +319,11 @@ export default class Asteroids {
 
         if (this.debug) {
             this.drawDebug();
+        }
+
+        if (this.state !== GameState.GAME_OVER) {
+            this.drawHUD();
+            this.drawLives();
         }
     }
 

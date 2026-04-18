@@ -16,8 +16,9 @@ export default class Asteroids {
     private debug: boolean = true;
 
     // Game loop time variables
-    private deltaTime: number = 0;
+    private accumulator: number = 0;
     private lastFrameTimeMs: DOMHighResTimeStamp = 0;
+    private lastFrameDuration: number = 0;
 
     private input: Input;
     private player: Player;
@@ -62,7 +63,7 @@ export default class Asteroids {
     }
 
     private drawDebug() {
-        const fps = Math.round(1000 / (this.deltaTime || 1));
+        const fps = Math.round(1000 / (this.lastFrameDuration || 1));
         const lines = [
             `FPS: ${fps}`,
             `# Asteroids: ${this.asteroids.length}`,
@@ -70,7 +71,8 @@ export default class Asteroids {
             `# Effects: ${this.effects.length}`,
             `State: ${this.state}`,
             `Round: ${this.round}`,
-            `DeltaTime: ${this.deltaTime.toFixed(2)}ms`,
+            `Accumulator: ${this.accumulator.toFixed(2)}ms`,
+            `Frame Time: ${this.lastFrameDuration.toFixed(2)}ms`,
         ];
 
         this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
@@ -82,9 +84,14 @@ export default class Asteroids {
         lines.forEach((line, i) => { this.ctx.fillText(line, 16, 26 + i * 18); });
     }
 
-    private handleInput() {
+    private handleInput(deltaTime: number) {
+        // Only process input if the player is alive & game state is playing or round clear
+        if (this.player.destroyed || (this.state !== GameState.PLAYING && this.state !== GameState.ROUND_CLEAR)) {
+            return;
+        }
+
         if (this.input.keys.w) {
-            this.player.moveForward(this.deltaTime);
+            this.player.moveForward(deltaTime);
         }
         else {
             // Turn off thruster animation
@@ -93,12 +100,12 @@ export default class Asteroids {
 
         // Rotate left
         if (this.input.keys.a) {
-            this.player.rotate(this.deltaTime, -1);
+            this.player.rotate(deltaTime, -1);
         }
 
         // Rotate right
         if (this.input.keys.d) {
-            this.player.rotate(this.deltaTime, 1);
+            this.player.rotate(deltaTime, 1);
         }
 
         if (this.input.keys.space) {
@@ -194,8 +201,8 @@ export default class Asteroids {
         this.player.destroyed = false;
     }
 
-    private handlePlayerDead() {
-        this.deadTimer += this.deltaTime;
+    private handlePlayerDead(deltaTime: number) {
+        this.deadTimer += deltaTime;
         if (this.deadTimer >= GAME_SETTINGS.DEAD_DURATION) {
             if (this.lives > 0) {
                 this.respawnPlayer();
@@ -207,8 +214,8 @@ export default class Asteroids {
         }
     }
 
-    private handleRoundCleared() {
-        this.roundClearTimer += this.deltaTime;
+    private handleRoundCleared(deltaTime: number) {
+        this.roundClearTimer += deltaTime;
 
         if (this.roundClearTimer >= GAME_SETTINGS.ROUND_CLEAR_DURATION) {
             this.roundClearTimer = 0;
@@ -218,10 +225,10 @@ export default class Asteroids {
         }
     }
 
-    private update() {
+    private update(deltaTime: number) {
         if (!this.player.destroyed) {
             this.player.handleBoundaries(this.boundaries);
-            this.player.update(this.deltaTime);
+            this.player.update(deltaTime);
         }
         if (this.player.invincible) {
             if (this.invincibleTimer >= PLAYER_SETTINGS.INVINCIBLE_DURATION) {
@@ -229,18 +236,18 @@ export default class Asteroids {
                 this.invincibleTimer = 0;
             }
             else {
-                this.invincibleTimer += this.deltaTime;
+                this.invincibleTimer += deltaTime;
             }
         }
 
         this.asteroids.forEach(a => {
             a.handleBoundaries(this.boundaries);
-            a.update(this.deltaTime);
+            a.update(deltaTime);
         });
 
         // Bullets and effects don't wrap the screen
-        this.bullets.forEach(b => b.update(this.deltaTime));
-        this.effects.forEach(e => e.update(this.deltaTime));
+        this.bullets.forEach(b => b.update(deltaTime));
+        this.effects.forEach(e => e.update(deltaTime));
 
         this.handleCollisions();
 
@@ -251,10 +258,10 @@ export default class Asteroids {
             this.state = GameState.ROUND_CLEAR;
         }
         else if (this.state === GameState.PLAYER_DEAD) {
-            this.handlePlayerDead();
+            this.handlePlayerDead(deltaTime);
         }
         else if (this.state === GameState.ROUND_CLEAR) {
-            this.handleRoundCleared();
+            this.handleRoundCleared(deltaTime);
         }
     }
 
@@ -280,25 +287,27 @@ export default class Asteroids {
 
     // Arrow function preserves 'this' context for requestAnimationFrame callback
     private gameLoop = (timestamp: DOMHighResTimeStamp) => {
-        // Delta time
+        const frameTime = timestamp - this.lastFrameTimeMs;
+
+        /*
+        // Throttle FPS 
         if (timestamp < this.lastFrameTimeMs + (1000 / GAME_SETTINGS.MAX_FPS)) {
             requestAnimationFrame(this.gameLoop);
             return;
         }
-        this.deltaTime += timestamp - this.lastFrameTimeMs;
+        */
+
+        this.lastFrameDuration = frameTime;
         this.lastFrameTimeMs = timestamp;
         
-        // Cap deltaTime to avoid death spiral after heavy frames 
-        this.deltaTime = Math.min(this.deltaTime, GAME_SETTINGS.MAX_DELTATIME);
-
-        if (!this.player.destroyed && (this.state === GameState.PLAYING || this.state === GameState.ROUND_CLEAR)) {
-            this.handleInput();
-        }
+        // Accumulate time that has passed, cap it to avoid a death spiral
+        this.accumulator += Math.min(frameTime, GAME_SETTINGS.MAX_DELTATIME);
 
         // Fixed timestep update
-        while (this.deltaTime >= GAME_SETTINGS.TIMESTEP) {
-            this.update();
-            this.deltaTime -= GAME_SETTINGS.TIMESTEP;
+        while (this.accumulator >= GAME_SETTINGS.TIMESTEP) {
+            this.handleInput(GAME_SETTINGS.TIMESTEP);
+            this.update(GAME_SETTINGS.TIMESTEP);
+            this.accumulator -= GAME_SETTINGS.TIMESTEP;
         }
 
         this.draw();

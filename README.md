@@ -2,6 +2,8 @@
 
 A semi-faithful recreation of the classic 1979 Atari arcade game, built with TypeScript and Vue.js using the HTML5 Canvas API.
 
+**[▶ Play it live](https://colby-noah.github.io/asteroids/)**
+
 ## Tech Stack
 
 - **TypeScript** — statically typed throughout
